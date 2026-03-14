@@ -39,11 +39,27 @@ function buildTokenCount(rows){
   state.tokenCount = set.size
 }
 
-function cleanContentPrefix(value){
-  return normalize(value)
-    .replace(/^((?:ㄴ|>>?|-)?\s*@?[가-힣A-Za-z0-9_]+(?:,\s*)?)+/u, "")
-    .replace(/^[\s,\u00A0\u200B]+/, "")
-    .trim()
+function cleanContentPrefix(text){
+  if(!text) return ""
+
+  let content = text.trim()
+
+  // 댓글 멘션 패턴
+  content = content.replace(
+    /^(?:ㄴ\s*)?(?:@)?([가-힣A-Za-z0-9_]+)\s+/,
+    (match, name) => {
+      // 실제 멘션일 때만 제거
+      if(match.startsWith("ㄴ") || match.startsWith("@")){
+        return ""
+      }
+      return match
+    }
+  )
+
+  // 멘션 제거 후 남는 특수문자 정리
+  content = content.replace(/^[.\s]+/, "")
+
+  return content.trim()
 }
 
 function normalizeRow(row, idx){
@@ -56,12 +72,13 @@ function normalizeRow(row, idx){
   const author = rawAuthor.replace(/^[ㄴ>\-@\s]+/, "")
 
   const content = cleanContentPrefix(
-    row.content ?? row[mapper.content] ?? row.message ?? row.text ?? row.body ?? row.내용 ?? row["댓글 내용"]
-  )
+  row.content ??
+  row.message ??
+  row.text ??
+  row["댓글 내용"]
+)
 
-  const ts = parseDateInput(
-    row.ts ?? row[mapper.date] ?? row.date ?? row.datetime ?? row.timestamp ?? row["작성 시간"] ?? row.시간
-  )
+  const ts = parseKoreanDate(row["작성 시간"] ?? row.date ?? row.datetime ?? "")
 
   if (!author || !content || !ts) return null
 
@@ -73,6 +90,30 @@ function normalizeRow(row, idx){
     len: content.length,
     raw: row
   }
+}
+
+function parseKoreanDate(str){
+
+  if(!str) return null
+
+  const m = str.match(
+    /(\d+)년\s*(\d+)월\s*(\d+)일\s*(오전|오후)\s*(\d+):(\d+)/
+  )
+
+  if(!m) return null
+
+  let [,y,mo,d,ap,h,mi] = m
+
+  y = Number(y)
+  mo = Number(mo) - 1
+  d = Number(d)
+  h = Number(h)
+  mi = Number(mi)
+
+  if(ap === "오후" && h !== 12) h += 12
+  if(ap === "오전" && h === 12) h = 0
+
+  return new Date(y,mo,d,h,mi).getTime()
 }
 
 async function saveRowsToDb(rows){
@@ -153,24 +194,27 @@ function matchCharacterFilter(row){
   return true
 }
 
+
 function sortRows(rows){
   const cloned = [...rows]
 
-  cloned.sort((a, b) => {
-    switch (state.sort) {
+  cloned.sort((a,b)=>{
+    switch(state.sort){
 
       case "date_desc":
         return b.ts - a.ts
 
+      case "date_asc":
+        return a.ts - b.ts
+
       case "author_asc":
-        return a.author.localeCompare(b.author, "ko")
+        return a.author.localeCompare(b.author,"ko")
 
       case "length_desc":
         return b.len - a.len
 
-      case "date_asc":
       default:
-        return a.ts - b.ts
+        return b.ts - a.ts
     }
   })
 

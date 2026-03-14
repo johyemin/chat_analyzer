@@ -16,54 +16,59 @@ function createBubble(item){
   const bubble = document.createElement("div")
   bubble.className = "bubble"
 
+  // meta
   const meta = document.createElement("div")
   meta.className = "bubbleMeta"
-  meta.innerHTML = `
-    <span class="bubbleAuthor">${escapeHtml(item.author)}</span>
-    <span class="bubbleDate">${escapeHtml(formatDateTime(item.ts))}</span>
-  `
+
+  const author = document.createElement("span")
+  author.className = "bubbleAuthor"
+  author.textContent = item.author
+
+  const date = document.createElement("span")
+  date.className = "bubbleDate"
+  date.textContent = formatDateTime(item.ts)
+
+  meta.append(author, date)
   bubble.appendChild(meta)
 
-  item.messages.forEach((t) => {
+  // messages
+  item.messages.forEach((text) => {
+
     const div = document.createElement("div")
     div.className = "bubbleText"
+    div.textContent = text
 
-    if (t.length > 600) {
-      const short = escapeHtml(t.slice(0, 600))
-      const full = escapeHtml(t)
+    if (text.length > 500) {
 
-      div.innerHTML = `
-        <span class="msg-short">${short}</span>
-        <span class="msg-ellipsis">...</span>
-        <span class="msg-full is-hidden">${full}</span>
-        <button type="button" class="msg-toggle">전체 보기</button>
-      `
+      div.classList.add("is-truncated")
 
-      const btn = div.querySelector(".msg-toggle")
-      const shortEl = div.querySelector(".msg-short")
-      const ellipsisEl = div.querySelector(".msg-ellipsis")
-      const fullEl = div.querySelector(".msg-full")
+      const btn = document.createElement("button")
+      btn.className = "msg-toggle"
+      btn.type = "button"
+      btn.textContent = "전체 보기"
 
       btn.addEventListener("click", () => {
-        const open = !fullEl.classList.contains("is-hidden")
 
-        if (open) {
-          shortEl.classList.remove("is-hidden")
-          ellipsisEl.classList.remove("is-hidden")
-          fullEl.classList.add("is-hidden")
+        const expanded = !div.classList.contains("is-truncated")
+
+        if (expanded) {
+          div.classList.add("is-truncated")
           btn.textContent = "전체 보기"
         } else {
-          shortEl.classList.add("is-hidden")
-          ellipsisEl.classList.add("is-hidden")
-          fullEl.classList.remove("is-hidden")
+          div.classList.remove("is-truncated")
           btn.textContent = "접기"
         }
+
       })
+
+      bubble.append(div, btn)
+
     } else {
-      div.textContent = t
+
+      bubble.appendChild(div)
+
     }
 
-    bubble.appendChild(div)
   })
 
   row.appendChild(bubble)

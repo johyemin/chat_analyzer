@@ -432,29 +432,18 @@ select {
   flex-wrap: nowrap;
 }
 
-.msg-short,
-.msg-full {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.msg-ellipsis {
-  display: inline;
-}
-
-.is-hidden {
-  display: none !important;
+.bubbleText.is-truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .msg-toggle {
-  display: inline-flex;
-  align-items: center;
   margin-top: 8px;
-  margin-left: 0;
-  padding: 0;
   font-size: 12px;
   color: #9dc0ff;
-  background: transparent;
+  background: none;
   border: 0;
   cursor: pointer;
 }
@@ -671,27 +660,27 @@ canvas {
   opacity: 1
 }
 
-.speakerControls{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+.speakerControls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   margin-block: 10px;
 }
 
-.speakerControls .box{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
+.speakerControls .box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .speakerControls input,
-.speakerControls select{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  color:var(--text);
-  padding:6px 8px;
-  border-radius:6px;
-  font-size:13px;
+.speakerControls select {
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
 }
 
 /* timeline */
@@ -759,49 +748,49 @@ canvas {
   gap: 8px
 }
 
-.sceneNav{
-  font-size:13px;
-  line-height:1.6;
+.sceneNav {
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-.sceneNav details{
-  border-left:1px solid var(--line);
-  padding-left:10px;
-  margin-bottom:6px;
+.sceneNav details {
+  border-left: 1px solid var(--line);
+  padding-left: 10px;
+  margin-bottom: 6px;
 }
 
-.sceneNav summary{
-  cursor:pointer;
-  color:var(--text);
-  font-weight:600;
-  padding:6px 8px;
-  border-radius:6px;
+.sceneNav summary {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 6px;
 }
 
-.sceneNav summary:hover{
-  background:var(--panel2);
+.sceneNav summary:hover {
+  background: var(--panel2);
 }
 
-.sceneNav summary::marker{
-  color:var(--muted);
+.sceneNav summary::marker {
+  color: var(--muted);
 }
 
-.sceneJump{
-  display:block;
-  width:100%;
-  text-align:left;
-  padding:6px 10px;
-  margin:2px 0;
-  border-radius:6px;
-  border:none;
-  background:transparent;
-  color:var(--muted);
-  cursor:pointer;
+.sceneJump {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 10px;
+  margin: 2px 0;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
 }
 
-.sceneJump:hover{
-  background:var(--panel3);
-  color:var(--text);
+.sceneJump:hover {
+  background: var(--panel3);
+  color: var(--text);
 }
 
 .sceneJump {
@@ -819,7 +808,7 @@ canvas {
   background: rgba(255, 255, 255, .08)
 }
 
-.pcnone{
+.pcnone {
   display: none;
 }
 
@@ -856,7 +845,7 @@ canvas {
     position: static;
   }
 
-  .speakerControls .box{
+  .speakerControls .box {
     flex: 1;
   }
 
@@ -880,11 +869,11 @@ canvas {
     grid-template-columns: 1fr
   }
 
-  .layout{
+  .layout {
     margin-top: 8px;
   }
 
-  .side{
+  .side {
     flex-direction: column-reverse;
     margin-top: 0px;
     margin-bottom: 10px;
@@ -922,7 +911,7 @@ canvas {
   }
 
   .timelineTree {
-    max-height: 240px
+    max-height: 200px
   }
 
   .weekHeader {
@@ -931,59 +920,68 @@ canvas {
   }
 }
 
-@media screen and (max-width: 568px){
-  .btn{
+@media screen and (max-width: 568px) {
+  .btn {
     padding: 8px 14px;
     border-radius: 10px;
   }
 
-  .box{
+  .box {
     border-radius: 10px;
   }
 
   .stat:nth-child(3),
-  .stat:nth-child(4){
+  .stat:nth-child(4) {
     display: none;
   }
 
-  .uploadBox input[type=file]{
+  .uploadBox input[type=file] {
     padding: 8px 12px;
     border-radius: 10px;
   }
 
-  .speakerControls{
+  .speakerControls {
     display: grid;
-    grid-template-columns: 1fr 1fr ;
+    grid-template-columns: 1fr 1fr;
   }
-  
-  .speakerControls .box{
+
+  .speakerControls .box {
     min-height: 30px;
   }
 
-  .speakerControls .box.box:last-child{
+  .speakerControls .box:last-child {
     grid-column: 1 / -1;
-    grid-row:  1 / 2;
+    grid-row: 1 / 2;
   }
 
-  .speakerControls input, .speakerControls select{
+  .speakerControls input,
+  .speakerControls select {
     width: 90%;
+    text-align: center;
   }
 
-  .tabs button{
-    font-size: 13px;
-    width: 30%;
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
-  .tabs button:last-child{
-    text-align: left;
-    width: auto;
+  .tab {
+    flex: 1 1 0;
+    min-width: 80px;
+    padding: 10px 12px;
+    text-align: center;
+    white-space: pre-wrap;
+    text-wrap: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
   }
 
-  .checkRow label{
+  .checkRow label {
     font-size: 14px;
   }
 
-  .pcnone{
+  .pcnone {
     display: block;
   }
 }

@@ -81,3 +81,27 @@ export function topAuthors(rows, max = 2){
     .slice(0, max)
     .map(([name]) => name)
 }
+
+
+export function cleanContentPrefix(text){
+  if(!text) return ""
+  return text
+    .replace(/^((?:ㄴ|>>?|-)??\s*@?[가-힣A-Za-z0-9_]+(?:,\s*)?)+/u,"")
+    .replace(/^[\s,\u00A0\u200B]+/,"")
+    .trim()
+}
+
+export function parseKoreanDate(str){
+  if(!str) return null
+  const m=str.match(/(\d+)년\s*(\d+)월\s*(\d+)일\s*(오전|오후)\s*(\d+):(\d+)/)
+  if(!m) return null
+  let[,y,mo,d,ap,h,mi]=m
+  y=Number(y)
+  mo=Number(mo)-1
+  d=Number(d)
+  h=Number(h)
+  mi=Number(mi)
+  if(ap==="오후" && h!==12) h+=12
+  if(ap==="오전" && h===12) h=0
+  return new Date(y,mo,d,h,mi).getTime()
+}
