@@ -17,7 +17,7 @@
             <div class="logo">Q</div>
             <div class="title">
               <h1>Chat Archive Analyzer Pro</h1>
-              <p>엑셀/CSV/JSON 직접 파싱 · 스토리 타임라인 · 로컬 검색</p>
+              <p>적용 파일 - 엑셀/CSV/JSON<br class="pcnone"> 스토리 타임라인 · 로컬 검색</p>
             </div>
           </div>
           <div class="grow"></div>
@@ -31,11 +31,11 @@
         <div class="speakerControls">
           <div class="box">
             <label for="speakerLeft">왼쪽 화자</label>
-            <input id="speakerLeft" type="text" value="사용자1" placeholder="왼쪽 화자 이름">
+            <input id="speakerLeft" type="text" value="User1" placeholder="왼쪽 화자 이름">
           </div>
           <div class="box">
             <label for="speakerRight">오른쪽 화자</label>
-            <input id="speakerRight" type="text" value="사용자2" placeholder="오른쪽 화자 이름">
+            <input id="speakerRight" type="text" value="User2" placeholder="오른쪽 화자 이름">
           </div>
           <div class="box">
             <label for="groupDays">묶음 기간</label>
@@ -63,8 +63,8 @@
               </div>
               <div class="box">
                 <select id="sortSelect" aria-label="정렬">
-                  <option value="date_asc" selected>오래된순</option>
-                  <option value="date_desc">최신순</option>
+                  <option value="date_desc" selected>최신순</option>
+                  <option value="date_asc" >오래된순</option>
                   <option value="author_asc">작성자순</option>
                   <option value="length_desc">내용 긴 순</option>
                 </select>
@@ -93,9 +93,9 @@
 
         <div class="tabs">
           <button class="tab active" data-quick="all">전체</button>
-          <button class="tab" data-quick="speaker-left">사용자1</button>
-          <button class="tab" data-quick="speaker-right">사용자2</button>
-          <button class="tab" data-quick="speaker-both">둘 함께</button>
+          <button class="tab" data-quick="speaker-left">User1</button>
+          <button class="tab" data-quick="speaker-right">User2</button>
+          <button class="tab" data-quick="speaker-both">함께</button>
         </div>
       </div>
     </div>
@@ -109,11 +109,16 @@
 
         <section class="card">
           <h2>캐릭터 필터</h2>
-          <div class="filterGroup">
-            <div class="checkRow"><label><input id="chkSuhyeok" type="checkbox" checked /><span>사용자1 관련만 보기</span></label></div>
-            <div class="checkRow"><label><input id="chkEunho" type="checkbox" checked /><span>사용자2 관련만 보기</span></label></div>
-            <div class="checkRow"><label><input id="chkPairOnly" type="checkbox" /><span>둘이 함께 언급된 메시지만</span></label></div>
-          </div>
+          <details class="characterFilter">
+            <summary class="characterToggle">캐릭터 선택 설정</summary>
+            <div class="characterInner">
+              <div class="filterGroup">
+                <div class="checkRow"><label><input id="chkSuhyeok" type="checkbox" checked /><span>User1 관련만 보기</span></label></div>
+                <div class="checkRow"><label><input id="chkEunho" type="checkbox" checked /><span>User2 관련만 보기</span></label></div>
+                <div class="checkRow"><label><input id="chkPairOnly" type="checkbox" /><span>둘이 함께</span></label></div>
+              </div>
+            </div>
+          </details>
         </section>
       </aside>
 

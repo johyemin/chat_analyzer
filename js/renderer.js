@@ -27,7 +27,42 @@ function createBubble(item){
   item.messages.forEach((t) => {
     const div = document.createElement("div")
     div.className = "bubbleText"
-    div.textContent = t
+
+    if (t.length > 600) {
+      const short = escapeHtml(t.slice(0, 600))
+      const full = escapeHtml(t)
+
+      div.innerHTML = `
+        <span class="msg-short">${short}</span>
+        <span class="msg-ellipsis">...</span>
+        <span class="msg-full is-hidden">${full}</span>
+        <button type="button" class="msg-toggle">전체 보기</button>
+      `
+
+      const btn = div.querySelector(".msg-toggle")
+      const shortEl = div.querySelector(".msg-short")
+      const ellipsisEl = div.querySelector(".msg-ellipsis")
+      const fullEl = div.querySelector(".msg-full")
+
+      btn.addEventListener("click", () => {
+        const open = !fullEl.classList.contains("is-hidden")
+
+        if (open) {
+          shortEl.classList.remove("is-hidden")
+          ellipsisEl.classList.remove("is-hidden")
+          fullEl.classList.add("is-hidden")
+          btn.textContent = "전체 보기"
+        } else {
+          shortEl.classList.add("is-hidden")
+          ellipsisEl.classList.add("is-hidden")
+          fullEl.classList.remove("is-hidden")
+          btn.textContent = "접기"
+        }
+      })
+    } else {
+      div.textContent = t
+    }
+
     bubble.appendChild(div)
   })
 
@@ -36,7 +71,13 @@ function createBubble(item){
 }
 
 function renderThreadView(rows){
-  const groups = groupRows(rows)
+  const ordered = [...rows].sort((a, b) => a.ts - b.ts)
+  const groups = groupRows(ordered)
+
+  if (state.sort === "date_desc") {
+    groups.reverse()
+  }
+
   const frag = document.createDocumentFragment()
 
   groups.forEach((group, idx) => {

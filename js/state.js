@@ -7,7 +7,7 @@ export const state = {
   view: "thread",
   query: "",
   field: "all",
-  sort: "date_asc",
+  sort: "date_desc",
   quickFilter: "all",
   tokenCount: 0,
   searchMs: 0,

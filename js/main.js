@@ -39,19 +39,39 @@ function buildTokenCount(rows){
   state.tokenCount = set.size
 }
 
+function cleanContentPrefix(value){
+  return normalize(value)
+    .replace(/^((?:ㄴ|>>?|-)?\s*@?[가-힣A-Za-z0-9_]+(?:,\s*)?)+/u, "")
+    .replace(/^[\s,\u00A0\u200B]+/, "")
+    .trim()
+}
+
 function normalizeRow(row, idx){
   const mapper = window.CsvMapper?.detect?.(row) || {}
-  const author = normalize(row.author ?? row[mapper.author] ?? row.name ?? row.이름 ?? row.작성자)
-  const content = normalize(row.content ?? row[mapper.content] ?? row.message ?? row.text ?? row.body ?? row.내용 ?? row["댓글 내용"])
-  const ts = parseDateInput(row.ts ?? row[mapper.date] ?? row.date ?? row.datetime ?? row.timestamp ?? row["작성 시간"] ?? row.시간)
+
+  const rawAuthor = normalize(
+    row.author ?? row[mapper.author] ?? row.name ?? row.이름 ?? row.작성자
+  )
+
+  const author = rawAuthor.replace(/^[ㄴ>\-@\s]+/, "")
+
+  const content = cleanContentPrefix(
+    row.content ?? row[mapper.content] ?? row.message ?? row.text ?? row.body ?? row.내용 ?? row["댓글 내용"]
+  )
+
+  const ts = parseDateInput(
+    row.ts ?? row[mapper.date] ?? row.date ?? row.datetime ?? row.timestamp ?? row["작성 시간"] ?? row.시간
+  )
+
   if (!author || !content || !ts) return null
+
   return {
     id: normalize(row.id ?? row[mapper.message_id] ?? `row-${idx + 1}`),
     author,
     content,
     ts,
     len: content.length,
-    raw: row,
+    raw: row
   }
 }
 
@@ -69,14 +89,15 @@ async function saveRowsToDb(rows){
 }
 
 function syncStateFromInputs(){
-  state.speakerLeft = normalize(els.left?.value) || "사용자1"
-  state.speakerRight = normalize(els.right?.value) || "사용자2"
+  state.speakerLeft = normalize(els.left?.value) || "User1"
+  state.speakerRight = normalize(els.right?.value) || "User2"
   state.groupDays = Number(els.days?.value) || 15
+  state.sort = els.sortSelect?.value || state.sort
 }
 
 function refreshSpeakerLabels(){
-  const leftName = state.speakerLeft || "사용자1"
-  const rightName = state.speakerRight || "사용자2"
+  const leftName = state.speakerLeft || "User1"
+  const rightName = state.speakerRight || "User2"
 
   const tabs = document.querySelectorAll(".tabs .tab")
   tabs.forEach((tab) => {
@@ -89,16 +110,16 @@ function refreshSpeakerLabels(){
   const labelA = els.chkA?.closest("label")?.querySelector("span")
   const labelB = els.chkB?.closest("label")?.querySelector("span")
   const labelPair = els.chkPair?.closest("label")?.querySelector("span")
-  if (labelA) labelA.textContent = `${leftName} 관련만 보기`
-  if (labelB) labelB.textContent = `${rightName} 관련만 보기`
-  if (labelPair) labelPair.textContent = `${leftName} / ${rightName} 둘이 함께 언급된 메시지만`
+  if (labelA) labelA.textContent = `${leftName}`
+  if (labelB) labelB.textContent = `${rightName}`
+  if (labelPair) labelPair.textContent = `함께`
   if (els.renderInfo) els.renderInfo.textContent = `${leftName} / ${rightName}`
 }
 
 function assignSpeakersFromRows(rows){
   const names = topAuthors(rows, 2)
-  state.speakerLeft = names[0] || state.speakerLeft || "사용자1"
-  state.speakerRight = names[1] || state.speakerRight || "사용자2"
+  state.speakerLeft = names[0] || state.speakerLeft || "User1"
+  state.speakerRight = names[1] || state.speakerRight || "User2"
   if (els.left) els.left.value = state.speakerLeft
   if (els.right) els.right.value = state.speakerRight
   refreshSpeakerLabels()
@@ -134,15 +155,25 @@ function matchCharacterFilter(row){
 
 function sortRows(rows){
   const cloned = [...rows]
+
   cloned.sort((a, b) => {
     switch (state.sort) {
-      case "date_desc": return b.ts - a.ts
-      case "author_asc": return a.author.localeCompare(b.author, "ko")
-      case "length_desc": return b.len - a.len
+
+      case "date_desc":
+        return b.ts - a.ts
+
+      case "author_asc":
+        return a.author.localeCompare(b.author, "ko")
+
+      case "length_desc":
+        return b.len - a.len
+
       case "date_asc":
-      default: return a.ts - b.ts
+      default:
+        return a.ts - b.ts
     }
   })
+
   return cloned
 }
 
