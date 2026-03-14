@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat Archive Analyzer Pro</title>
+  <meta name="theme-color" content="#0b0d12">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div class="app">
+    <div class="hero">
+      <div class="panel">
+        <div class="top">
+          <div class="brand">
+            <div class="logo">Q</div>
+            <div class="title">
+              <h1>Chat Archive Analyzer Pro</h1>
+              <p>엑셀/CSV/JSON 직접 파싱 · 스토리 타임라인 · 로컬 검색</p>
+            </div>
+          </div>
+          <div class="grow"></div>
+          <div class="box uploadBox">
+            <input id="fileInput" type="file" accept=".csv,.json,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple />
+            <button class="btn secondary" id="sampleBtn" type="button">샘플 로드</button>
+            <button class="btn ghost" id="resetDbBtn" type="button">DB 초기화</button>
+          </div>
+        </div>
+
+        <div class="speakerControls">
+          <div class="box">
+            <label for="speakerLeft">왼쪽 화자</label>
+            <input id="speakerLeft" type="text" value="사용자1" placeholder="왼쪽 화자 이름">
+          </div>
+          <div class="box">
+            <label for="speakerRight">오른쪽 화자</label>
+            <input id="speakerRight" type="text" value="사용자2" placeholder="오른쪽 화자 이름">
+          </div>
+          <div class="box">
+            <label for="groupDays">묶음 기간</label>
+            <select id="groupDays">
+              <option value="7">7일</option>
+              <option value="15" selected>15일</option>
+              <option value="30">30일</option>
+            </select>
+          </div>
+        </div>
+
+        <details class="advancedPanel">
+          <summary class="advancedToggle">필터 / 보기 설정</summary>
+          <div class="advancedInner">
+            <div class="grid">
+              <div class="box searchBox">
+                <input id="searchInput" type="text" placeholder="작성자, 키워드, 내용 검색 · 여러 단어는 AND 검색" />
+              </div>
+              <div class="box">
+                <select id="fieldSelect" aria-label="검색 범위">
+                  <option value="all">전체</option>
+                  <option value="author">작성자</option>
+                  <option value="content">내용</option>
+                </select>
+              </div>
+              <div class="box">
+                <select id="sortSelect" aria-label="정렬">
+                  <option value="date_asc" selected>오래된순</option>
+                  <option value="date_desc">최신순</option>
+                  <option value="author_asc">작성자순</option>
+                  <option value="length_desc">내용 긴 순</option>
+                </select>
+              </div>
+              <div class="box">
+                <select id="viewSelect" aria-label="보기 방식">
+                  <option value="thread" selected>대화 흐름</option>
+                  <option value="list">리스트</option>
+                  <option value="graph">대화 그래프</option>
+                  <option value="analysis">캐릭터 분석</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="subgrid">
+              <div class="stat"><div class="label">전체 메시지</div><div class="value" id="statTotal">0</div></div>
+              <div class="stat"><div class="label">검색 결과</div><div class="value" id="statFiltered">0</div></div>
+              <div class="stat"><div class="label">인덱스 토큰</div><div class="value" id="statTokens">0</div></div>
+              <div class="stat"><div class="label">마지막 검색 시간</div><div class="value" id="statSearchMs">-</div></div>
+              <div class="stat"><div class="label">DB 저장 수</div><div class="value" id="statDbCount">0</div></div>
+              <div class="stat"><div class="label">장면 묶음 수</div><div class="value" id="statSceneCount">0</div></div>
+              <div class="stat"><div class="label">상태</div><div class="value" id="statStatus">대기</div></div>
+            </div>
+          </div>
+        </details>
+
+        <div class="tabs">
+          <button class="tab active" data-quick="all">전체</button>
+          <button class="tab" data-quick="speaker-left">사용자1</button>
+          <button class="tab" data-quick="speaker-right">사용자2</button>
+          <button class="tab" data-quick="speaker-both">둘 함께</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="side">
+        <section class="card timelineNav">
+          <h2>스토리 타임라인</h2>
+          <div id="timelineTree" class="timelineTree"></div>
+        </section>
+
+        <section class="card">
+          <h2>캐릭터 필터</h2>
+          <div class="filterGroup">
+            <div class="checkRow"><label><input id="chkSuhyeok" type="checkbox" checked /><span>사용자1 관련만 보기</span></label></div>
+            <div class="checkRow"><label><input id="chkEunho" type="checkbox" checked /><span>사용자2 관련만 보기</span></label></div>
+            <div class="checkRow"><label><input id="chkPairOnly" type="checkbox" /><span>둘이 함께 언급된 메시지만</span></label></div>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <div class="toolbar2">
+          <div><span class="tag" id="summaryTag">데이터 없음</span></div>
+          <div class="muted renderInfoVisible" id="renderInfo"></div>
+        </div>
+        <div id="viewRoot"></div>
+        <div id="sentinel" class="loader" style="display:none;">불러오는 중…</div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/csv_mapper.js"></script>
+  <script src="js/db.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

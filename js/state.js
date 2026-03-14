@@ -1,0 +1,15 @@
+export const state = {
+  rows: [],
+  filteredRows: [],
+  speakerLeft: "사용자1",
+  speakerRight: "사용자2",
+  groupDays: 15,
+  view: "thread",
+  query: "",
+  field: "all",
+  sort: "date_asc",
+  quickFilter: "all",
+  tokenCount: 0,
+  searchMs: 0,
+  sourceName: "",
+}
