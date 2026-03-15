@@ -652,12 +652,20 @@ canvas {
 }
 
 .advancedInner,
-.characterInner {
+.characterInner,
+.fileInner {
   margin-top: 12px
 }
 
 .renderInfoVisible {
   opacity: 1
+}
+
+.topBoxWrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
 }
 
 .speakerControls {
@@ -671,6 +679,46 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.fileDropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.fileBtn {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 4px;
+}
+
+.fileBtn:after {
+  content: '▶';
+  font-size: 12px;
+}
+
+.fileDropdown.open .fileBtn:after {
+  transform: rotate(90deg);
+}
+
+.fileMenu {
+  width: 100%;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #1c2333;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+}
+
+.fileDropdown.open .fileMenu {
+  display: flex;
 }
 
 .speakerControls input,
@@ -808,6 +856,77 @@ canvas {
   background: rgba(255, 255, 255, .08)
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-box {
+  background: #1e1e1e;
+  padding: 32px 24px;
+  border-radius: 10px;
+  width: 340px;
+  text-align: center;
+}
+
+.modal-box h3 {
+  margin-block: 0;
+}
+
+.modal-box p {
+  margin-block: 8px 1.5em;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.modal-actions .mBtn {
+  font-size: 14px;
+  min-height: 34px;
+  background: var(--panel3);
+  color: #fff;
+  font-weight: 500;
+  border: 1px solid #586f9b;
+  border-radius: 4px;
+}
+
+.modal-actions .mBtn:not(#btnUploadCancel) {
+  flex: 1;
+  background: var(--line);
+  transition: .16s ease background .16s ease color;
+}
+
+.modal-actions .mBtn:not(#btnUploadCancel):hover,
+.modal-actions .mBtn:not(#btnUploadCancel):focus,
+.modal-actions .mBtn:not(#btnUploadCancel):active {
+  background: var(--muted);
+  color: var(--panel3);
+  font-weight: 500;
+}
+
+.modal-actions button#btnUploadCancel {
+  width: 100%;
+  transition: .16s ease background .16s ease color;
+}
+
+.modal-actions button#btnUploadCancel:hover {
+  background: var(--panel);
+  color: var(--muted);
+}
+
 .pcnone {
   display: none;
 }
@@ -877,6 +996,11 @@ canvas {
     flex-direction: column-reverse;
     margin-top: 0px;
     margin-bottom: 10px;
+  }
+
+  .topBoxWrap {
+    flex-wrap: wrap;
+    row-gap: 1rem;
   }
 }
 
@@ -973,7 +1097,7 @@ canvas {
     text-align: center;
     white-space: pre-wrap;
     text-wrap: nowrap;
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
   }
 
@@ -984,4 +1108,59 @@ canvas {
   .pcnone {
     display: block;
   }
+
+  .topBoxWrap {
+    width: 100%;
+    flex-direction: column-reverse;
+    align-items: end;
+    gap: 0;
+    margin-top: 10px;
+  }
+
+  .speakerControls {
+    width: 100%;
+  }
+
+  .fileBox {
+    position: absolute;
+    top: 52px;
+  }
+
+  .btn.fileBtn {
+    min-height: 40px;
+  }
+
+}
+
+.pin-box {
+  width: 380px;
+  max-width: calc(100vw - 24px);
+}
+
+.pin-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pin-input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 8px;
+  background: #333;
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.pin-helper {
+  min-height: 20px;
+  color: #ff9f9f;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.emotion-legend {
+  margin-bottom: 14px;
 }

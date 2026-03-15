@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -8,6 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
   <div class="app">
     <div class="hero">
@@ -22,28 +24,46 @@
           </div>
           <div class="grow"></div>
           <div class="box uploadBox">
-            <input id="fileInput" type="file" accept=".csv,.json,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple />
+            <input id="fileInput" type="file"
+              accept=".csv,.json,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              multiple />
             <button class="btn secondary" id="sampleBtn" type="button">샘플 로드</button>
             <button class="btn ghost" id="resetDbBtn" type="button">DB 초기화</button>
           </div>
+
         </div>
 
-        <div class="speakerControls">
-          <div class="box">
-            <label for="speakerLeft">왼쪽 화자</label>
-            <input id="speakerLeft" type="text" value="User1" placeholder="왼쪽 화자 이름">
+        <div class="topBoxWrap">
+          <div class="speakerControls">
+            <div class="box">
+              <label for="speakerLeft">왼쪽 화자</label>
+              <input id="speakerLeft" type="text" value="User1" placeholder="왼쪽 화자 이름">
+            </div>
+            <div class="box">
+              <label for="speakerRight">오른쪽 화자</label>
+              <input id="speakerRight" type="text" value="User2" placeholder="오른쪽 화자 이름">
+            </div>
+            <div class="box">
+              <label for="groupDays">묶음 기간</label>
+              <select id="groupDays">
+                <option value="7">7일</option>
+                <option value="15" selected>15일</option>
+                <option value="30">30일</option>
+              </select>
+            </div>
           </div>
-          <div class="box">
-            <label for="speakerRight">오른쪽 화자</label>
-            <input id="speakerRight" type="text" value="User2" placeholder="오른쪽 화자 이름">
-          </div>
-          <div class="box">
-            <label for="groupDays">묶음 기간</label>
-            <select id="groupDays">
-              <option value="7">7일</option>
-              <option value="15" selected>15일</option>
-              <option value="30">30일</option>
-            </select>
+          <div class="fileBox">
+            <div class="fileDropdown">
+              <button class="btn secondary fileBtn" type="button">
+                백업 다운로드 형식</sub>
+              </button>
+
+              <div class="fileMenu">
+                <button class="btn secondary" id="exportCsvBtn">CSV</button>
+                <button class="btn secondary" id="exportXlsxBtn">엑셀</button>
+                <button class="btn secondary" id="exportJsonBtn">JSON</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -64,7 +84,7 @@
               <div class="box">
                 <select id="sortSelect" aria-label="정렬">
                   <option value="date_desc" selected>최신순</option>
-                  <option value="date_asc" >오래된순</option>
+                  <option value="date_asc">오래된순</option>
                   <option value="author_asc">작성자순</option>
                   <option value="length_desc">내용 긴 순</option>
                 </select>
@@ -75,18 +95,40 @@
                   <option value="list">리스트</option>
                   <option value="graph">대화 그래프</option>
                   <option value="analysis">캐릭터 분석</option>
+                  <!-- <option value="emotion">관계 감정</option> -->
                 </select>
               </div>
             </div>
 
             <div class="subgrid">
-              <div class="stat"><div class="label">전체 메시지</div><div class="value" id="statTotal">0</div></div>
-              <div class="stat"><div class="label">검색 결과</div><div class="value" id="statFiltered">0</div></div>
-              <div class="stat"><div class="label">인덱스 토큰</div><div class="value" id="statTokens">0</div></div>
-              <div class="stat"><div class="label">마지막 검색 시간</div><div class="value" id="statSearchMs">-</div></div>
-              <div class="stat"><div class="label">DB 저장 수</div><div class="value" id="statDbCount">0</div></div>
-              <div class="stat"><div class="label">장면 묶음 수</div><div class="value" id="statSceneCount">0</div></div>
-              <div class="stat"><div class="label">상태</div><div class="value" id="statStatus">대기</div></div>
+              <div class="stat">
+                <div class="label">전체 메시지</div>
+                <div class="value" id="statTotal">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">검색 결과</div>
+                <div class="value" id="statFiltered">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">인덱스 토큰</div>
+                <div class="value" id="statTokens">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">마지막 검색 시간</div>
+                <div class="value" id="statSearchMs">-</div>
+              </div>
+              <div class="stat">
+                <div class="label">DB 저장 수</div>
+                <div class="value" id="statDbCount">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">장면 묶음 수</div>
+                <div class="value" id="statSceneCount">0</div>
+              </div>
+              <div class="stat">
+                <div class="label">상태</div>
+                <div class="value" id="statStatus">대기</div>
+              </div>
             </div>
           </div>
         </details>
@@ -113,8 +155,10 @@
             <summary class="characterToggle">캐릭터 선택 설정</summary>
             <div class="characterInner">
               <div class="filterGroup">
-                <div class="checkRow"><label><input id="chkSuhyeok" type="checkbox" checked /><span>User1 관련만 보기</span></label></div>
-                <div class="checkRow"><label><input id="chkEunho" type="checkbox" checked /><span>User2 관련만 보기</span></label></div>
+                <div class="checkRow"><label><input id="chkSuhyeok" type="checkbox" checked /><span>User1 관련만
+                      보기</span></label></div>
+                <div class="checkRow"><label><input id="chkEunho" type="checkbox" checked /><span>User2 관련만
+                      보기</span></label></div>
                 <div class="checkRow"><label><input id="chkPairOnly" type="checkbox" /><span>둘이 함께</span></label></div>
               </div>
             </div>
@@ -133,10 +177,62 @@
     </div>
   </div>
 
+  <div id="uploadChoiceModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>데이터 처리 방식</h3>
+      <p>기존 데이터가 있습니다. <br>업로드한 파일을 어떻게 처리할까요?</p>
+      <div class="modal-actions">
+        <button class="mBtn" id="btnUploadAdd">기존 데이터 추가</button>
+        <button class="mBtn" id="btnUploadReplace">데이터 교체</button>
+        <button class="mBtn" id="btnUploadCancel">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pinModal" class="modal">
+    <div class="modal-box pin-box">
+      <h3 id="pinTitle">PIN 확인</h3>
+      <p id="pinDesc">저장된 데이터를 열려면 PIN을 입력하세요.</p>
+      <div class="pin-fields">
+        <input id="pinInput" class="pin-input" type="password" inputmode="numeric" placeholder="PIN 입력" />
+        <input id="pinConfirmInput" class="pin-input hidden" type="password" inputmode="numeric"
+          placeholder="PIN 다시 입력" />
+      </div>
+      <div class="pin-helper" id="pinError"></div>
+      <div class="modal-actions">
+        <button class="mBtn" id="pinSubmitBtn" type="button">확인</button>
+        <button class="mBtn" id="pinResetAllBtn" type="button">전체 초기화</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="js/csv_mapper.js"></script>
   <script src="js/db.js"></script>
   <script type="module" src="js/main.js"></script>
+  <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const dropdown = document.querySelector(".fileDropdown");
+      const btn = document.querySelector(".fileBtn");
+
+      if (!dropdown || !btn) return;
+
+      btn.addEventListener("click", () => {
+        dropdown.classList.toggle("open");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove("open");
+        }
+      });
+
+    });
+
+  </script>
 </body>
+
 </html>
